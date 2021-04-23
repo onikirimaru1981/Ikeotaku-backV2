@@ -6,7 +6,7 @@ const { Favorito, Usuario, Anime, Manga } = require('../models');
 
 
 
-const favoritosGet = async (req = request, res = response) => {
+const favoritoGet = async (req = request, res = response) => {
     try {
         const { limit, page } = req.query;
         const query = { estado: true };
@@ -59,62 +59,55 @@ const favoritosGet = async (req = request, res = response) => {
 const AñadirFavorito = async (req, res = response) => {
 
 
-    const data = req.body;
-    const usuario = new Favorito({ nombre, correo, password, rol, fechaNacimiento });
+    const { anime, usuario } = req.body;
+    // const query = { estado: true };
+    console.log(anime);
+
+    const { titulosAnime, idAnime } = await Anime.findById(anime);
+    const { nombreUser, idUser } = await Usuario.findById(usuario);
+
+
+    if (anime.titulos) {
+        titulos = {
+            en: titulos.hasOwnProperty('en') ? titulos.en : '',
+            en_jp: titulos.hasOwnProperty('en') ? titulos.en_jp : '',
+            ja_jp: titulos.hasOwnProperty('en') ? titulos.ja_jp : ''
+        }
+    };
+
+    let data = { titulosAnime, idAnime, nombreUser, idUser }
+
+
+    // console.log(data);
+    // const usuarioF = await Usuario.findById({ usuario, estado: true })
+
+
+    console.log(data);
+
+
+
+    const favorito = new Favorito(data);
+
+    console.log(favorito);
 
 
 
     // // Guardar en BD el registro
 
-    await usuario.save();
+    // await usuario.save();
     res.json({
 
         msg: 'Usuario creado y guardado correctamente',
-        usuario
-    });
-
-
-};
-
-const usuariosPut = async (req, res = response) => {
-
-    const id = req.params.id;
-    const { _id, password, google, rol, ...resto } = req.body;
-
-
-
-    if (password) {
-        const salt = bcryptjs.genSaltSync(10);
-        resto.password = bcryptjs.hashSync(password, salt);
-    };
-
-    await Usuario.findById(id, (error, user) => {
-        const estadoUser = user.estado
-
-        if (!estadoUser) {
-            res.status(400).json(
-                {
-                    msg: 'El usuario que intenta actualizar no existe en la BD'
-
-                });
-        };
-
-    });
-
-    const usuario = await Usuario.findByIdAndUpdate(id, resto, { new: true });
-
-    res.status(202).json({
-
-        msg: 'Actualizacion realizada con exito',
-        usuario
-
+        data
     });
 
 
 };
 
 
-const usuariosDelete = async (req, res = response) => {
+
+
+const favoritoDelete = async (req, res = response) => {
     try {
         let { id } = req.params;
 
@@ -142,9 +135,7 @@ const usuariosDelete = async (req, res = response) => {
 };
 
 module.exports = {
-    usuarioGet,
-    usuariosGet,
-    usuariosPost,
-    usuariosPut,
-    usuariosDelete
+    favoritoGet,
+    favoritoDelete,
+    AñadirFavorito
 }

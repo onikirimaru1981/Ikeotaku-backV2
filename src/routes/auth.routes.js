@@ -7,21 +7,18 @@ const router = Router();
 
 // Peticiones 
 
-// Ruta login
-
 router.post('/login', [
 
     check('correo', 'El correo es obligatorio').isEmail(),
     check('password', 'La contraseña es obligatoria').not().isEmpty(),
     validarCampos
-], login);//Controlador login
+], login);
 
-// Ruta Google Sign
 
 router.post('/google', [
-    check('id_token', 'El id token es necesario').not().isEmpty(),// Error personalizado
+    check('id_token', 'El id token es necesario').not().isEmpty(),
     validarCampos
-], googleSignin);// Controlador google signin
+], googleSignin);
 
 
 module.exports = router;

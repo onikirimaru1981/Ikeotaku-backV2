@@ -1,7 +1,6 @@
 // Centrando el validador de role
 const mongoose = require('mongoose');
-const { Anime, Usuario, Role, Manga } = require('../models');
-
+const { Anime, Usuario, Role, Manga, Favorito } = require('../models');
 
 
 
@@ -23,7 +22,6 @@ const emailExiste = async (correo = '') => {
 
     if (existeCorreo) {
         throw new Error(`El correo: ${correo} ya esta registrado,utilice otro diferente`)
-
     };
 
 };
@@ -46,7 +44,6 @@ const existeUsuarioPorId = async (id = '') => {
 
 
 
-// Crear middleware existeCategoria
 
 const existeMangaPorId = async (id = '') => {
 
@@ -65,13 +62,27 @@ const existeMangaPorId = async (id = '') => {
 
 
 };
-// Crear middleware existeAnime
+
 
 const existeAnimePorId = async (id = '') => {
 
     if (mongoose.Types.ObjectId.isValid(id)) {
 
         const { estado } = await Anime.findById(id);
+        if (!estado) {
+            throw new Error(`El id: ${id} no existe en la BD`);
+        }
+    } else {
+        throw new Error(`El id ${id} no es válido`);
+    };
+
+
+};
+const existeFavoritoPorId = async (id = '') => {
+
+    if (mongoose.Types.ObjectId.isValid(id)) {
+
+        const { estado } = await Favorito.findById(id);
         if (!estado) {
             throw new Error(`El id: ${id} no existe en la BD`);
         }
@@ -102,6 +113,6 @@ module.exports = {
     existeUsuarioPorId,
     existeMangaPorId,
     existeAnimePorId,
-    coleccionesPermitidas
-
+    coleccionesPermitidas,
+    existeFavoritoPorId
 };

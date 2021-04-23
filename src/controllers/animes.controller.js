@@ -4,8 +4,6 @@ const { Anime } = require('../models');
 
 // Peticiones
 
-
-
 const animesGet = async (req = request, res = response) => {
     try {
 
@@ -38,8 +36,6 @@ const animesGet = async (req = request, res = response) => {
             animes
         });
 
-
-
     } catch (error) {
         res.status(401).json({
 
@@ -48,8 +44,6 @@ const animesGet = async (req = request, res = response) => {
         });
 
     };
-
-
 
 };
 

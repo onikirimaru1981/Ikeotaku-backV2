@@ -1,2 +1,5 @@
 node_modules
 .env
+models/favorito.js
+routes/favoritos.routes.js
+controllers/favoritos.controller.js

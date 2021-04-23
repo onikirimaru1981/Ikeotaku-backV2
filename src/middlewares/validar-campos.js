@@ -1,19 +1,18 @@
 const { validationResult } = require('express-validator');
 
+//  mostrar resultado de validacion en caso de que hubieran errores por parte de express-validation
 
-// Sintaxis para mostrar resultado de validacion en caso de que hubieran errores por parte de express-validation
-const validarCampos = (req, res, next) => {// Next es lo que tengo que llamar si la funcion pasa el if
+const validarCampos = (req, res, next) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json(errors);
-    }
+    };
 
-    next();// El nex se ejecutara si todo va correctamente,y si hay otro middleware lo ejecutara y sino ira al controller
+    next();
 
-}
-
+};
 
 module.exports = {
     validarCampos
-}
+};
