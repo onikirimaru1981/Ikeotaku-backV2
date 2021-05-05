@@ -1,6 +1,8 @@
 
 const { Schema, model } = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
+// const autopopulate = require('mongoose-autopopulate')
+
 
 const UsuarioSchema = Schema({
 
@@ -14,6 +16,7 @@ const UsuarioSchema = Schema({
         required: [true, 'El correo es obligatorio'],
         unique: true
     },
+
 
     password: {
         type: String,
@@ -29,42 +32,42 @@ const UsuarioSchema = Schema({
     rol: {
         type: String,
         required: [true, 'El rol es obligatorio'],
-        // default: 'USER_ROLE',
-        emun: ['ADMIN_ROLE', 'USER_ROLE',]
+        emun: ['ADMIN_ROLE', 'USER_ROLE',],
+        default: 'USER_ROLE'
 
     },
-    favorito: {
+    animesFavoritos: [{
 
-        type: Schema.Types.ObjectId,
-        ref: 'Favorito'
-    },
-    comentario: {
-        type: Schema.Types.ObjectId,
-        ref: 'Comentario'
-    },
-    puntuacion: {
-        type: Schema.Types.ObjectId,
-        ref: 'Puntuacion'
-    },
+        type: Object
+    }],
+    mangasFavoritos: [{
+
+        type: Object
+    }],
 
     ciudad: {
         type: String,
-        default: null
+        default: ''
+
     },
 
     genero: {
         type: String,
-        default: null
+        default: 'Desconocido'
+
+
     },
 
     pais: {
         type: String,
-        default: null
+        default: ''
+
     },
 
     img: {
         type: String,
-        default: null
+        default: ''
+
     },
 
     estado: {
@@ -79,6 +82,7 @@ const UsuarioSchema = Schema({
 
 });
 UsuarioSchema.plugin(mongoosePaginate);
+// UsuarioSchema.plugin(autopopulate);
 
 
 

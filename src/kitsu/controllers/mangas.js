@@ -7,6 +7,7 @@ const saveDocuments = (data) => {
 
         const manga = Manga();
 
+        manga.id = manga_data.id
         manga.titulos = {// Titulos en diferentes idiomas
             en: manga_data.attributes.titles.en,
             en_jp: manga_data.attributes.titles.en_jp,

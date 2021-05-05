@@ -26,6 +26,7 @@ const esAdminRole = (req, res = response, next) => {
 
 };
 
+
 // Comprobar si el usuario tiene uno de los roles predefinidos en la DB
 
 

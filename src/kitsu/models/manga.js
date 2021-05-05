@@ -4,6 +4,11 @@ const { Schema, model } = require('mongoose');
 
 const MangaSchema = new Schema({
 
+    id: {
+        type: Number,
+        unique: true,
+        min: 1
+    },
     categoria: {
         type: String
     },

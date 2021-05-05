@@ -21,9 +21,9 @@ mongoose.connect(process.env.SERVER, {
     // generos.restartCollection();
     // await generos.setData();
 
-    console.log("Iniciamos la carga de 'Mangas'");
-    mangas.restartCollection();
-    await mangas.setData();
+    // console.log("Iniciamos la carga de 'Mangas'");
+    // mangas.restartCollection();
+    // await mangas.setData();
 
     console.log("Carga de datos terminada con exito");
 

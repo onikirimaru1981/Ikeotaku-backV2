@@ -1,6 +1,8 @@
 const { response, request } = require('express');
 const bcryptjs = require('bcryptjs');
-const { Usuario } = require('../models');
+const { Usuario, Anime, Manga } = require('../models');
+const jwt = require('jsonwebtoken');
+
 
 // Peticiones
 
@@ -86,32 +88,32 @@ const usuarioGet = async (req, res = response) => {
 
 const usuariosPost = async (req, res = response) => {
 
-    try {
-        const { nombre, correo, password, rol, fechaNacimiento } = req.body;
-        const usuario = new Usuario({ nombre, correo, password, rol, fechaNacimiento });
+    // try {
+    const { nombre, correo, password, rol, fechaNacimiento } = req.body;
+    const usuario = new Usuario({ nombre, correo, password, rol, fechaNacimiento });
 
-        //Encriptar contraseña
+    //Encriptar contraseña
 
-        const salt = bcryptjs.genSaltSync(10);
-        usuario.password = bcryptjs.hashSync(password, salt);
+    const salt = bcryptjs.genSaltSync(10);
+    usuario.password = bcryptjs.hashSync(password, salt);
 
-        // // Guardar en BD el registro
+    // // Guardar en BD el registro
 
-        await usuario.save();
-        res.json({
+    await usuario.save();
+    res.json({
 
-            msg: 'Usuario creado y guardado correctamente',
-            usuario
-        });
+        msg: 'Usuario creado y guardado correctamente',
+        usuario
+    });
 
-    } catch (error) {
-        res.status(401).json({
+    // } catch (error) {
+    //     res.status(401).json({
 
 
-            msg: 'Pongase en contacto con el administrador'
-        });
+    //         msg: 'Pongase en contacto con el administrador'
+    //     });
 
-    };
+    // };
 
 };
 
@@ -178,12 +180,79 @@ const usuariosDelete = async (req, res = response) => {
 
 };
 
+
+
+const añadirFavorito = async (req = request, res = response) => {
+
+    // try {
+
+
+    const { id, id_usuario: _id } = req.params;
+
+
+
+
+
+    const originalUrl = req.originalUrl;
+
+
+
+    const { id: idFavorito, categoria, } =
+        originalUrl.includes('manga') ? await Manga.findOne({ id }) :
+            originalUrl.includes('anime') ? await Anime.findOne({ id }) :
+                res.status(500).json({ msg: 'Pongase en contacto con el administrador' });
+
+
+    originalUrl.includes('manga') ? await Usuario.findOneAndUpdate({ _id }, { $push: { mangasFavoritos: idFavorito } }) :
+        originalUrl.includes('anime') ? await Usuario.findOneAndUpdate({ _id }, { $push: { animesFavoritos: idFavorito } }) :
+            res.status(500).json({ msg: 'Pongase en contacto con el administrador' });
+
+    return res.status(200).json({
+
+        msg: `${categoria} añadido correctamente a lista de favoritos`,
+
+    });
+
+    // } catch (error) {
+    //     console.log(error);
+    //     res.status(500).json({
+    //         msg: 'Ups algo ha pasado,contacta con el administrador'
+    //     });
+    // };
+
+};
+
+const eliminarFavorito = async (req = request, res = response) => {
+
+
+    const { id, id_usuario: _id } = req.params;
+    const originalUrl = req.originalUrl;
+
+
+    await Usuario.findOneAndUpdate({ _id }, { $pull: { animesFavoritos: { $elemMatch: { id: id } } } })
+
+
+    // originalUrl.includes('manga') ? await Usuario.findOneAndUpdate({ _id }, { $pull: id }) :
+    //     originalUrl.includes('anime') ? await Usuario.findOneAndUpdate({ _id }, { $pull: id }) :
+    //         res.status(500).json({ msg: 'Pongase en contacto con el administrador' });
+
+    res.status(201).json({
+
+        msg: `Borrado de: ${id} efectuado correctamente`
+    })
+
+};
+
+
+
 module.exports = {
     usuarioGet,
     usuariosGet,
     usuariosPost,
     usuariosPut,
-    usuariosDelete
+    usuariosDelete,
+    añadirFavorito,
+    eliminarFavorito
 }
 
 

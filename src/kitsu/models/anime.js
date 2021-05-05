@@ -3,6 +3,11 @@ const { Schema, model } = require('mongoose');
 
 const AnimesSchema = Schema({
 
+    id: {
+        type: Number,
+        unique: true,
+        min: 1
+    },
     titulos: {
         en: { type: String },
         en_jp: { type: String },

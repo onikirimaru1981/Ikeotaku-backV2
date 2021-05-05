@@ -2,12 +2,22 @@ const { Schema, model } = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const AnimeSchema = Schema({
+    id: {
+        type: Number,
+        unique: true,
+        min: 1
+    },
 
     titulos: {
         en: { type: String },
         en_jp: { type: String },
         ja_jp: { type: String },
 
+    },
+    usuario: {
+        type: Schema.Types.ObjectId,
+        ref: 'Usuario',
+        required: true
     },
     synopsis: {
         type: String,

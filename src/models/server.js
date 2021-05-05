@@ -5,6 +5,7 @@ const { dbConnection, } = require('../database/config');
 const fileUpload = require('express-fileupload');
 
 
+
 class Server {
 
     constructor() {
@@ -16,7 +17,6 @@ class Server {
             auth: '/api/auth',
             buscar: '/api/buscar',
             // comentarios: '/api/comentario',
-            // favoritos: '/api/favorito',
             // generos: '/api/genero',
             mangas: '/api/manga',
             // puntuaciones: '/api/puntuacion',
@@ -36,6 +36,7 @@ class Server {
 
     async conectarDB() {
         await dbConnection();
+
     };
 
     middlewares() {
@@ -48,7 +49,7 @@ class Server {
         this.app.use(express.json())
 
         // Directorio publivo
-        this.app.use(express.static('../public'))
+        this.app.use(express.static('public'))
 
         // Carga de archivos express-fileupload
 
@@ -65,7 +66,6 @@ class Server {
         this.app.use(this.paths.auth, require('../routes/auth.routes'));
         this.app.use(this.paths.buscar, require('../routes/buscar.routes'));
         // this.app.use(this.paths.comentarios, require('../routes/comentarios.routes'))
-        // this.app.use(this.paths.favoritos, require('../routes/favoritos.routes'));
         // this.app.use(this.paths.generos, require('../routes/auth.routes'))
         this.app.use(this.paths.mangas, require('../routes/mangas.routes'));
         // this.app.use(this.paths.puntuaciones, require('../routes/auth.routes'))

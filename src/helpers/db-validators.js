@@ -1,13 +1,15 @@
 // Centrando el validador de role
 const mongoose = require('mongoose');
 const { Anime, Usuario, Role, Manga, Favorito } = require('../models');
+const { response, request } = require('express');
 
 
 
 const esRoleValido = async (rol = '') => {
+    console.log(rol);
 
     const existeRol = await Role.findOne({ rol });
-    console.log(existeRol);
+
     if (!existeRol) {
         throw new Error(`El rol: ${rol} no esta registrado en la base de datos`)
     };
@@ -45,6 +47,7 @@ const existeUsuarioPorId = async (id = '') => {
 
 
 
+
 const existeMangaPorId = async (id = '') => {
 
     if (mongoose.Types.ObjectId.isValid(id)) {
@@ -78,21 +81,6 @@ const existeAnimePorId = async (id = '') => {
 
 
 };
-const existeFavoritoPorId = async (id = '') => {
-
-    if (mongoose.Types.ObjectId.isValid(id)) {
-
-        const { estado } = await Favorito.findById(id);
-        if (!estado) {
-            throw new Error(`El id: ${id} no existe en la BD`);
-        }
-    } else {
-        throw new Error(`El id ${id} no es válido`);
-    };
-
-
-};
-
 
 // Validar colecciones
 
@@ -114,5 +102,6 @@ module.exports = {
     existeMangaPorId,
     existeAnimePorId,
     coleccionesPermitidas,
-    existeFavoritoPorId
+
+
 };

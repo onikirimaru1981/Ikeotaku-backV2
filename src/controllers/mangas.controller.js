@@ -12,7 +12,7 @@ const mangasGet = async (req = request, res = response) => {
         const { limit, page } = req.query;
         const query = { estado: true };
         const opcionesPaginate = {
-            sort: { titulos: 1 },
+            sort: { id: 1 },
             allowDiskUse: true,
             limit,
             page

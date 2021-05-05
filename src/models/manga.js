@@ -2,8 +2,14 @@
 const { Schema, model } = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
+
 const MangaSchema = new Schema({
 
+    id: {
+        type: Number,
+        unique: true,
+        min: 1
+    },
     titulo: {
         en: {
             type: String,
@@ -88,6 +94,8 @@ const MangaSchema = new Schema({
 
 
 MangaSchema.plugin(mongoosePaginate);
+
+
 
 
 

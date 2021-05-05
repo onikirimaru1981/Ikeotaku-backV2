@@ -1,8 +1,9 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { usuariosDelete, usuariosGet, usuariosPost, usuariosPut, usuarioGet } = require('../controllers');
-const { esRoleValido, emailExiste, existeUsuarioPorId } = require('../helpers');
+const { usuariosDelete, usuariosGet, usuariosPost, usuariosPut, usuarioGet, añadirFavorito, eliminarFavorito } = require('../controllers');
+const { esRoleValido, emailExiste, existeUsuarioPorId, existeAnimePorId, existeMangaPorId } = require('../helpers');
 const { validarCampos, validarJWT, esAdminRole, tieneRole } = require('../middlewares')
+const { existeMangaFavorito, existeAnimeFavorito } = require('../middlewares/validar-favorito');
 
 
 const router = Router();
@@ -30,11 +31,40 @@ router.put('/:id', [
 
 ], usuariosPut);
 
+router.post('/:id_usuario/add_anime_favorito/:id', [
+    validarJWT,
+    existeAnimeFavorito,
+    validarCampos
+
+], añadirFavorito);
+
+router.post('/:id_usuario/add_manga_favorito/:id', [
+    validarJWT,
+    existeMangaFavorito,
+    validarCampos
+
+], añadirFavorito);
+
+router.delete('/:id_usuario/add_anime_favorito/:id', [
+    validarJWT,
+    // check('id',).custom(existeUsuarioPorId),
+    // tieneRole('ADMIN_ROLE', 'USER_ROLE'),
+    validarCampos
+
+], eliminarFavorito);
+
+router.delete('/:id_usuario/add_manga_favorito/:id', [
+    validarJWT,
+    // check('id',).custom(existeUsuarioPorId),
+    // tieneRole('ADMIN_ROLE', 'USER_ROLE'),
+    validarCampos
+
+], eliminarFavorito);
+
 router.post('/', [
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('correo', 'El correo no es valido').custom(emailExiste).isEmail(),
     check('password', 'El password debe contener como minimo 6 caracteres').isLength({ min: 6 }),
-    check('rol').custom(esRoleValido),
     validarCampos
 ], usuariosPost);
 
@@ -42,7 +72,6 @@ router.post('/', [
 router.delete('/:id', [
     validarJWT,
     esAdminRole,
-    // tieneRole('ADMIN_ROLE', 'USER_ROLE'),
     check('id').custom(existeUsuarioPorId),
     validarCampos
 ], usuariosDelete);
