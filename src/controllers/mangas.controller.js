@@ -2,9 +2,7 @@ const { response, request } = require('express');
 const bcryptjs = require('bcryptjs');
 const { Manga } = require('../models');
 
-// Peticiones
-
-
+//                                                                            Peticiones
 
 const mangasGet = async (req = request, res = response) => {
     try {
@@ -57,16 +55,19 @@ const mangasGet = async (req = request, res = response) => {
 const mangaGet = async (req, res = response) => {
 
     const mangaId = req.params.id;
-    const manga = await Manga.findById(mangaId);
+
+    const manga = await Manga.findOne({ id: mangaId });
+
+    if (!manga) {
+
+        res.status(400).json(
+            { msg: `El manga con id: ${mangaId} que intenta solicitar no existe` });
+    };
 
     const { estado, id } = manga
 
+    console.log(estado, id);
 
-    if (manga === null) {
-        res.status(400).json(
-            { msg: `El manga con el id: ${id} que intenta solicitar ya no existe  en la DB` });
-
-    }
     if (!estado) {
         res.status(400).json(
             { msg: `El manga con el id: ${id} que intenta solicitar ya no existe  en la DB` });
@@ -89,7 +90,7 @@ const mangaPut = async (req, res = response) => {
 
     body.usuario = req.usuario._id
 
-    const manga = await Manga.findByIdAndUpdate(id, body, { new: true })
+    const manga = await Manga.findOneAndUpdate({ id }, body, { new: true })
 
     res.status(202).json({
 
@@ -102,29 +103,17 @@ const mangaPut = async (req, res = response) => {
 
 
 const mangaDelete = async (req, res = response) => {
-    // try {
+
     let { id } = req.params;
 
-    //Borrado sin perder dato
 
-    const mangaBorrado = await Manga.findByIdAndUpdate(id, { estado: false }, { new: true });
-    console.log(mangaBorrado.titulo.en);
-
+    await Manga.findOneAndUpdate({ id }, { estado: false }, { new: true });
 
     res.json({
 
-        msg: `El manga: ${mangaBorrado.titulo.en} con el id: ${id} ha sido borrado correctamente`
+        msg: `El manga con el id: ${id} ha sido borrado correctamente`
 
     });
-
-    // } catch (error) {
-    //     res.status(401).json({
-
-
-    //         msg: 'Pongase en contacto con el administrador'
-    //     });
-
-    // };
 
 };
 

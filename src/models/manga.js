@@ -7,89 +7,92 @@ const MangaSchema = new Schema({
 
     id: {
         type: Number,
-        unique: true,
-        min: 1
+        key: true
     },
-    titulo: {
-        en: {
-            type: String,
-            required: [true, 'El title es ogligatorio']
-        },
-        en_jp: { type: String },
+    categoria: {
+        type: String,
         default: ''
     },
 
-    categoria: {
-        type: String, required: [true, 'El tipo es ogligatorio']
+    volumenes: {
+        type: String,
+        default: ''
     },
 
-    imagen: {
-        diminuta: { type: String },
-        mediana: { type: String }
-    },
-
-    estado: {
-        type: Boolean,
-        default: true,
+    titulos: {
+        en: { type: String },
+        en_jp: { type: String },
+        ja_jp: { type: String },
+        default: ''
     },
 
     synopsis: {
         type: String,
-        required: [true, 'La sinopsis es ogligatoria']
+        default: ''
     },
 
-    favoritesCount: {
+
+    capitulos: {
         type: Number,
-        required: [true, 'El title es ogligatorio']
+        default: 0
     },
 
-    ageRating: {
-        type: String,
-        required: [true, 'El title es ogligatorio']
-    },
-
-    ageRatingGuide: {
-        type: String,
-        required: [true, 'El title es ogligatorio']
-    },
-
-    status: {
-        type: String,
-        required: [true, 'El title es ogligatorio']
-    },
-
-    chapterCount: {
+    rank_Popularidad: {
         type: Number,
-        required: [true, 'El title es ogligatorio']
+        default: 0
     },
 
-    volumeCount: {
-        type: Number,
-        required: [true, 'El title es ogligatorio']
-    },
-
-    serialization: {
+    PEGI: {
         type: String,
-        required: [true, 'El title es ogligatorio']
+        default: ''
     },
 
-    mangaType: {
+    edad_Recomendada: {
         type: String,
-        required: [true, 'El title es ogligatorio']
+        default: ''
+    },
+
+    formato: {
+        type: String,
+        default: ''
+    },
+
+    situacion: {
+        type: String,
+        default: ''
+    },
+
+    creadoEn: {
+        type: String,
+        default: ''
+    },
+
+    finalizadoEn: {
+        type: String,
+        default: ''
+    },
+
+    imagenes: {
+        diminuta: { type: String },
+        mediana: { type: String },
+        pequena: { type: String }
     },
 
     puntuacion: {
-        type: Schema.Types.ObjectId,
-        ref: 'Puntuacion',
-        required: true
+        type: Number,
+        default: 0
     },
 
 
-    comentario: {
+    estado: {
+        type: Boolean,
+        default: true
+    },
+    comentarios: [{
         type: Schema.Types.ObjectId,
-        ref: 'Categoria',
-        required: true
-    }
+        ref: 'Comentario'
+
+    }],
 });
 
 

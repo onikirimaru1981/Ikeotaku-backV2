@@ -186,16 +186,9 @@ const añadirFavorito = async (req = request, res = response) => {
 
     // try {
 
-
     const { id, id_usuario: _id } = req.params;
 
-
-
-
-
     const originalUrl = req.originalUrl;
-
-
 
     const { id: idFavorito, categoria, } =
         originalUrl.includes('manga') ? await Manga.findOne({ id }) :

@@ -9,7 +9,7 @@ const saveDocuments = (data) => {
 
         const anime = new Anime();
 
-        anime.id = anime_data.id
+        // anime.id = anime_data.id
         anime.titulos = {// Titulos en diferentes idioma
             en: anime_data.attributes.titles.en,
             en_jp: anime_data.attributes.titles.en_jp,

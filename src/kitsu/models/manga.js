@@ -1,4 +1,12 @@
+require("dotenv").config();
 const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose')
+
+const autoIncrement = require('mongoose-auto-increment');
+
+const connection = mongoose.createConnection(process.env.SERVER);
+
+autoIncrement.initialize(connection);
 
 
 
@@ -6,8 +14,7 @@ const MangaSchema = new Schema({
 
     id: {
         type: Number,
-        unique: true,
-        min: 1
+
     },
     categoria: {
         type: String
@@ -79,9 +86,16 @@ const MangaSchema = new Schema({
     estado: {
         type: Boolean,
         default: true
-    }
+    },
+    comentarios: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Comentario'
+
+    }],
 }, { versionKey: false });
 
+MangaSchema.plugin(autoIncrement.plugin, { model: 'Manga', field: 'id', startAt: 1, });
 
 
-module.exports = model('Mangas', MangaSchema);
+
+module.exports = model('Manga', MangaSchema);

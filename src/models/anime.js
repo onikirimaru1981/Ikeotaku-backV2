@@ -4,20 +4,20 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const AnimeSchema = Schema({
     id: {
         type: Number,
-        unique: true,
-        min: 1
+        key: true
     },
 
     titulos: {
         en: { type: String },
         en_jp: { type: String },
         ja_jp: { type: String },
+        default: ''
 
     },
     usuario: {
         type: Schema.Types.ObjectId,
         ref: 'Usuario',
-        required: true
+
     },
     synopsis: {
         type: String,
@@ -25,6 +25,7 @@ const AnimeSchema = Schema({
     },
     categoria: {
         type: String,
+        default: ''
 
     },
     numero_Episodios: {
@@ -86,7 +87,12 @@ const AnimeSchema = Schema({
     estado: {
         type: Boolean,
         default: true
-    }
+    },
+    comentarios: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Comentario'
+
+    }],
 });
 AnimeSchema.plugin(mongoosePaginate);
 

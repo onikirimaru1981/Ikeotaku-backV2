@@ -3,6 +3,7 @@ const auth = require('../controllers/auth.controller');
 const animes = require('../controllers/animes.controller');
 const mangas = require('../controllers/mangas.controller');
 const buscar = require('../controllers/buscar.controller');
+const comentarios = require('../controllers/comentarios.controller');
 
 
 
@@ -12,5 +13,6 @@ module.exports = {
     ...mangas,
     ...auth,
     ...animes,
-    ...usuarios
+    ...usuarios,
+    ...comentarios
 }

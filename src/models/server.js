@@ -16,7 +16,7 @@ class Server {
             animes: '/api/anime',
             auth: '/api/auth',
             buscar: '/api/buscar',
-            // comentarios: '/api/comentario',
+            comentarios: '/api/comentario',
             // generos: '/api/genero',
             mangas: '/api/manga',
             // puntuaciones: '/api/puntuacion',
@@ -65,7 +65,7 @@ class Server {
         this.app.use(this.paths.animes, require('../routes/animes.routes'));
         this.app.use(this.paths.auth, require('../routes/auth.routes'));
         this.app.use(this.paths.buscar, require('../routes/buscar.routes'));
-        // this.app.use(this.paths.comentarios, require('../routes/comentarios.routes'))
+        this.app.use(this.paths.comentarios, require('../routes/comentarios.routes'))
         // this.app.use(this.paths.generos, require('../routes/auth.routes'))
         this.app.use(this.paths.mangas, require('../routes/mangas.routes'));
         // this.app.use(this.paths.puntuaciones, require('../routes/auth.routes'))

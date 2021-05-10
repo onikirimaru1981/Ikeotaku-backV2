@@ -33,9 +33,14 @@ const existeUsuarioPorId = async (id = '') => {
 
     if (mongoose.Types.ObjectId.isValid(id)) {
 
-        const { estado } = await Usuario.findById(id);
+        const usuario = await Usuario.findById(id);
+        if (!usuario) {
 
-        if (!estado) {
+            throw new Error(`El usuario con id: ${id} no existe en la BD`);
+        };
+
+
+        if (!usuario.mongooseestado) {
             throw new Error(`El id  ${id}  no existe en la BD`);
         }
     } else {
@@ -50,11 +55,17 @@ const existeUsuarioPorId = async (id = '') => {
 
 const existeMangaPorId = async (id = '') => {
 
-    if (mongoose.Types.ObjectId.isValid(id)) {
+    // console.log(id);
+    if (id) {
 
-        const { estado } = await Manga.findById(id);
+        const manga = await Manga.findOne({ id });
+        if (!manga) {
 
-        if (!estado) {
+            throw new Error(`El manga con id: ${id} no existe en la BD`);
+        };
+
+
+        if (!manga.estado) {
             throw new Error(`El id: ${id} no existe en la BD`);
         }
     } else {
@@ -69,12 +80,18 @@ const existeMangaPorId = async (id = '') => {
 
 const existeAnimePorId = async (id = '') => {
 
-    if (mongoose.Types.ObjectId.isValid(id)) {
+    if (id) {
 
-        const { estado } = await Anime.findById(id);
-        if (!estado) {
+        const anime = await Anime.findOne({ id });
+
+        if (!anime) {
+
+            throw new Error(`El anime con id: ${id} no existe en la BD`);
+        };
+
+        if (!anime.estado) {
             throw new Error(`El id: ${id} no existe en la BD`);
-        }
+        };
     } else {
         throw new Error(`El id ${id} no es válido`);
     };

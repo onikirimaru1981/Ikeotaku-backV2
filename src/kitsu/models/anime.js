@@ -1,12 +1,19 @@
+require("dotenv").config();
 const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose')
+
+const autoIncrement = require('mongoose-auto-increment');
+
+const connection = mongoose.createConnection(process.env.SERVER);
+
+autoIncrement.initialize(connection);
 
 
-const AnimesSchema = Schema({
+
+const AnimeSchema = Schema({
 
     id: {
-        type: Number,
-        unique: true,
-        min: 1
+        type: Number
     },
     titulos: {
         en: { type: String },
@@ -69,18 +76,18 @@ const AnimesSchema = Schema({
     estado: {
         type: Boolean,
         default: true
-    }
+    },
+    comentarios: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Comentario'
+
+    }],
 
 }, { versionKey: false });
-// AnimesSchema.methods.toJSON = function () {
-//     const { __v, ...data } = this.toObject();
-//     return data;
-// }
+
+AnimeSchema.plugin(autoIncrement.plugin, { model: 'Anime', field: 'id', startAt: 1, });
 
 
 
 
-
-
-
-module.exports = model('Animes', AnimesSchema);
+module.exports = model('Anime', AnimeSchema);

@@ -14,9 +14,9 @@ mongoose.connect(process.env.SERVER, {
 
     //Obtenemos los Animes y mangas
 
-    // console.log("Iniciamos la carga de 'Animes'")
-    // animes.restartCollection();
-    // await animes.setData();
+    console.log("Iniciamos la carga de 'Animes'")
+    animes.restartCollection();
+    await animes.setData();
     // console.log("Iniciamos la carga de 'Generos'")
     // generos.restartCollection();
     // await generos.setData();

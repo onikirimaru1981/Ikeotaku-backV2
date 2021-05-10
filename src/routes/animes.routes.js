@@ -16,7 +16,7 @@ router.get('/', [
 
 
 router.get('/:id', [
-    // check('id',).custom(existeUsuarioPorId),
+    check('id',).custom(existeAnimePorId),
     validarCampos
 
 ], animeGet);

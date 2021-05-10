@@ -50,16 +50,17 @@ const animesGet = async (req = request, res = response) => {
 const animeGet = async (req, res = response) => {
 
     const animeId = req.params.id;
-    const anime = await Anime.findById(animeId);
+
+    const anime = await Anime.findOne({ id: animeId });
+
+    if (!anime) {
+
+        res.status(400).json(
+            { msg: `El anime con id: ${animeId} que intenta solicitar no existe` });
+    };
 
     const { estado, id } = anime
 
-
-    if (anime === null) {
-        res.status(400).json(
-            { msg: `El anime con el id: ${id} que intenta solicitar ya no existe  en la DB` });
-
-    }
     if (!estado) {
         res.status(400).json(
             { msg: `El anime con el id: ${id} que intenta solicitar ya no existe  en la DB` });
@@ -78,12 +79,11 @@ const animeGet = async (req, res = response) => {
 const animePut = async (req, res = response) => {
 
     const { id } = req.params;
-    const { estado, usuario, ...body } = req.body
+    const { estado, usuario, ...body } = req.body;
 
-    body.usuario = req.usuario._id
+    body.usuario = req.usuario._id;
 
-    // //Codigo para actualizar con el metodo findByIdAndUpdate
-    const anime = await Anime.findByIdAndUpdate(id, body, { new: true })// La opcion new true devuelve ya el dato actualizado
+    const anime = await Anime.findOneAndUpdate({ id }, body, { new: true });
 
     res.status(202).json({
 
@@ -96,29 +96,16 @@ const animePut = async (req, res = response) => {
 
 
 const animeDelete = async (req, res = response) => {
-    // try {
+
     let { id } = req.params;
 
-    //Borrado sin perder dato
-
-    const animeBorrado = await Anime.findByIdAndUpdate(id, { estado: false }, { new: true });
-    console.log(animeBorrado);
-
+    await Anime.findOneAndUpdate({ id }, { estado: false }, { new: true });
 
     res.json({
 
-        msg: `El anime: ${animeBorrado.titulos.en} con el id: ${id} ha sido borrado correctamente`
+        msg: `El anime con el id: ${id} ha sido borrado correctamente`
 
     });
-
-    // } catch (error) {
-    //     res.status(401).json({
-
-
-    //         msg: 'Pongase en contacto con el administrador'
-    //     });
-
-    // };
 
 };
 
