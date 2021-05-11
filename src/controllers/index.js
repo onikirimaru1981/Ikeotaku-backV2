@@ -1,18 +1,19 @@
-const usuarios = require('../controllers/usuarios.controllers');
-const auth = require('../controllers/auth.controller');
+
 const animes = require('../controllers/animes.controller');
-const mangas = require('../controllers/mangas.controller');
+const auth = require('../controllers/auth.controller');
 const buscar = require('../controllers/buscar.controller');
 const comentarios = require('../controllers/comentarios.controller');
+const mangas = require('../controllers/mangas.controller');
+const usuarios = require('../controllers/usuarios.controllers');
 
 
 
 
 module.exports = {
-    ...buscar,
-    ...mangas,
-    ...auth,
     ...animes,
-    ...usuarios,
-    ...comentarios
-}
+    ...auth,
+    ...buscar,
+    ...comentarios,
+    ...mangas,
+    ...usuarios
+};

@@ -1,12 +1,9 @@
-// Centrando el validador de role
-const mongoose = require('mongoose');
-const { Anime, Usuario, Role, Manga, Favorito } = require('../models');
-const { response, request } = require('express');
 
+const mongoose = require('mongoose');
+const { Anime, Manga, Role, Usuario } = require('../models');
 
 
 const esRoleValido = async (rol = '') => {
-    console.log(rol);
 
     const existeRol = await Role.findOne({ rol });
 
@@ -17,17 +14,15 @@ const esRoleValido = async (rol = '') => {
 };
 
 
-
 const emailExiste = async (correo = '') => {
 
     const existeCorreo = await Usuario.findOne({ correo });
 
     if (existeCorreo) {
-        throw new Error(`El correo: ${correo} ya esta registrado,utilice otro diferente`)
+        throw new Error(`El correo: ${correo} ya esta registrado,utilice otro diferente`);
     };
 
 };
-
 
 const existeUsuarioPorId = async (id = '') => {
 
@@ -40,9 +35,10 @@ const existeUsuarioPorId = async (id = '') => {
         };
 
 
-        if (!usuario.mongooseestado) {
+        if (!usuario.estado) {
             throw new Error(`El id  ${id}  no existe en la BD`);
-        }
+        };
+
     } else {
         throw new Error(`El id ${id} no es válido`);
     };
@@ -50,12 +46,8 @@ const existeUsuarioPorId = async (id = '') => {
 };
 
 
-
-
-
 const existeMangaPorId = async (id = '') => {
 
-    // console.log(id);
     if (id) {
 
         const manga = await Manga.findOne({ id });
@@ -71,9 +63,6 @@ const existeMangaPorId = async (id = '') => {
     } else {
         throw new Error(`El id ${id} no es válido`);
     };
-
-
-
 
 };
 
@@ -96,16 +85,14 @@ const existeAnimePorId = async (id = '') => {
         throw new Error(`El id ${id} no es válido`);
     };
 
-
 };
 
-// Validar colecciones
 
 const coleccionesPermitidas = (coleccion = '', colecciones = []) => {
 
     const incluida = colecciones.includes(coleccion);
     if (!incluida) {
-        throw new Error(`La coleccion: ${coleccion} no esta permitida. Colecciones permitidas: ${colecciones}`)
+        throw new Error(`La coleccion: ${coleccion} no esta permitida. Colecciones permitidas: ${colecciones}`);
     };
 
     return true;
@@ -113,12 +100,10 @@ const coleccionesPermitidas = (coleccion = '', colecciones = []) => {
 
 
 module.exports = {
-    esRoleValido,
-    emailExiste,
-    existeUsuarioPorId,
-    existeMangaPorId,
-    existeAnimePorId,
     coleccionesPermitidas,
-
-
+    emailExiste,
+    esRoleValido,
+    existeAnimePorId,
+    existeMangaPorId,
+    existeUsuarioPorId,
 };

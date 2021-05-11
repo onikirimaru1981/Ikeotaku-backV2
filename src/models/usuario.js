@@ -37,12 +37,10 @@ const UsuarioSchema = Schema({
 
     },
     animesFavoritos: [{
-
-        type: Object
+        type: String
     }],
     mangasFavoritos: [{
-
-        type: Object
+        type: String
     }],
 
     ciudad: {
@@ -54,8 +52,6 @@ const UsuarioSchema = Schema({
     genero: {
         type: String,
         default: 'Desconocido'
-
-
     },
 
     pais: {

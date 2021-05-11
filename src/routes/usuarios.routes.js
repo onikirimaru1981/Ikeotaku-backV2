@@ -1,9 +1,9 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { usuariosDelete, usuariosGet, usuariosPost, usuariosPut, usuarioGet, añadirFavorito, eliminarFavorito, añadirFavoritoAnime, añadirFavoritoManga } = require('../controllers');
-const { esRoleValido, emailExiste, existeUsuarioPorId, existeAnimePorId, existeMangaPorId } = require('../helpers');
+const { usuariosDelete, usuariosGet, usuariosPost, usuariosPut, usuarioGet, añadirFavoritoAnime, añadirFavoritoManga, eliminarAnimeFavorito, eliminarMangaFavorito } = require('../controllers');
+const { esRoleValido, emailExiste, existeUsuarioPorId } = require('../helpers');
 const { validarCampos, validarJWT, esAdminRole, tieneRole } = require('../middlewares')
-const { existeMangaFavorito, existeAnimeFavorito } = require('../middlewares/validar-favorito');
+const { existeMangaFavorito, existeAnimeFavorito, existeAnimeFavoritoPorId, existeMangaFavoritoPorId } = require('../middlewares/validar-favorito');
 
 
 const router = Router();
@@ -31,24 +31,33 @@ router.put('/:id', [
 
 ], usuariosPut);
 
+
 router.post('/:id_usuario/add_anime_favorito/:id', [
     validarJWT,
-    // existeAnimeFavorito,
+    existeAnimeFavorito,
     validarCampos
-
 ], añadirFavoritoAnime);
+
 
 router.post('/:id_usuario/add_manga_favorito/:id', [
     validarJWT,
     existeMangaFavorito,
     validarCampos
-
 ], añadirFavoritoManga);
 
-router.delete('/borrarFavorito/:id_usuario/:id_anime', [
+
+router.delete('/borrarAnimeFavorito/:id_usuario/:id', [
     validarJWT,
+    existeAnimeFavoritoPorId,
     validarCampos
-], eliminarFavorito);
+], eliminarAnimeFavorito);
+
+
+router.delete('/borrarMangaFavorito/:id_usuario/:id', [
+    validarJWT,
+    existeMangaFavoritoPorId,
+    validarCampos
+], eliminarMangaFavorito);
 
 
 

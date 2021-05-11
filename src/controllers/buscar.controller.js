@@ -23,7 +23,6 @@ const buscarUsuarios = async (termino = '', res = response) => {
         });
     };
 
-    //Busqueda por parametros
     const regexp = new RegExp(termino, 'i');
     const usuarios = await Usuario.find({
         $or: [{ nombre: regexp }, { correo: regexp }],
@@ -124,8 +123,6 @@ const buscar = (req, res = response) => {
                 msg: 'Se me olvido hacer esta busqueda'
             });
     };
-
-
 
 };
 

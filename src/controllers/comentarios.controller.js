@@ -2,8 +2,6 @@ const { response, request } = require('express');
 const { Comentario } = require('../models');
 const { Usuario, Anime, Manga } = require('../models');
 
-
-
 const comentariosGet = async (req = request, res = response) => {
 
     const { limit, page } = req.query;
@@ -47,12 +45,14 @@ const comentariosGet = async (req = request, res = response) => {
 };
 
 
-const comentarioGetManga = async (req, res = response) => {
+const comentarioGet = async (req, res = response) => {
+
     const comentarioId = req.params.id;
-    console.log(comentarioId);
+    const comentario = await Comentario.findById(comentarioId).populate({ path: 'creado_por anime manga  ', select: 'nombre titulos.en titulos.en_jp' })
 
-
-    const comentario = await Comentario.findById(comentarioId).populate({ path: 'creado_por anime  ', select: 'nombre titulos.en' })
+    if (!comentario) {
+        res.status(400).json({ msg: `El comentario que intenta solicitar no existe` });
+    }
 
     if (!comentario.estado) {
         res.status(400).json({ msg: `El comentario que intenta solicitar no existe` });
@@ -66,78 +66,79 @@ const comentarioGetManga = async (req, res = response) => {
 
 };
 
-const comentarioGetAnime = async (req, res = response) => {
-    const comentarioId = req.params.id;
-    const originalUrl = req.originalUrl;
-
-    const comentario = originalUrl.includes('anime') ?
-        await Comentario.findById(comentarioId).populate({ path: 'creado_por anime  ', select: 'nombre titulos.en' }) :
-        originalUrl.includes('manga') ?
-            await Comentario.findById(comentarioId).populate({ path: 'creado_por manga  ', select: 'nombre titulos.en_jp' }) :
-            console.log('Error');
-
-    if (!comentario.estado) {
-        res.status(400).json({ msg: `El comentario que intenta solicitar ya no existe` });
-    };
-
-    res.status(200).json({
-        msg: 'Comentario solicitado',
-        comentario
-    });
-
-
-};
-
-
-const crearComentario = async (req = request, res = response) => {
+const crearComentarioAnime = async (req = request, res = response) => {
 
     const { comentario } = req.body;
     const { id_usuario: _id, id } = req.params;
-    const originalUrl = req.originalUrl;
-
-    const [usuario, anime, manga] = await Promise.all([
-        Usuario.findOne({ _id }),
-        Anime.findById(id),
-        Manga.findById(id),
+    const [usuario, anime] = await Promise.all([
+        Usuario.findById(_id),
+        Anime.findOne({ id }),
     ]);
 
-    (!manga & originalUrl.includes('manga')) ? res.status(401).json({ msg: 'Error,el manga que intenta comentar no existe' }) :
-        (!anime & originalUrl.includes('anime')) ? res.status(401).json({ msg: 'Error,el anime que intenta comentar no existe' }) : console.log('Contacte con el administrador');
+    if (!anime) {
+        res.status(401).json({ msg: 'Error,el anime que intenta comentar no existe' });
+    };
 
-
-    const data = originalUrl.includes('anime') ? { comentario, anime: anime._id, creado_por: usuario._id } :
-        originalUrl.includes('manga') ? { comentario, manga: manga._id, creado_por: usuario._id } : console.log('Error');
+    const data = {
+        comentario,
+        anime: anime._id,
+        creado_por: usuario._id
+    };
 
     const comentarioDb = await new Comentario(data);
-    const idComentario = comentarioDb._id;
-
     await comentarioDb.save();
-
-
-    originalUrl.includes('anime') ? anime.comentarios.push(idComentario) & await anime.save() :
-        originalUrl.includes('manga') ? manga.comentarios.push(idComentario) & await manga.save() : console.log('Error');
+    const idAnime = anime._id;
+    const idComentario = comentarioDb._id;
+    await Anime.findByIdAndUpdate(idAnime, { $push: { 'comentarios': idComentario } }, { new: true });
 
     res.json({
-
         msg: 'Comentario creado y guardado correctamente',
-        comentario: comentarioDb,
-
+        comentario: comentarioDb
     });
 
+};
+const crearComentarioManga = async (req = request, res = response) => {
+
+    const { comentario } = req.body;
+    const { id_usuario: _id, id } = req.params;
+    const [usuario, manga] = await Promise.all([
+        Usuario.findById(_id),
+        Manga.findOne({ id }),
+    ]);
+
+    if (!manga) {
+        res.status(401).json({ msg: 'Error,el manga que intenta comentar no existe' });
+    };
+
+    const data = {
+        comentario,
+        manga: manga._id,
+        creado_por: usuario._id
+    };
+
+    const comentarioDb = await new Comentario(data);
+    await comentarioDb.save();
+    const idManga = manga._id;
+    const idComentario = comentarioDb._id
+    await Manga.findByIdAndUpdate(idManga, { $push: { 'comentarios': idComentario } }, { new: true });
+
+    res.json({
+        msg: 'Comentario creado y guardado correctamente',
+        comentario: comentarioDb
+    });
 };
 
 
 const comentarioPut = async (req, res = response) => {
 
-
     const { id_usuario, id } = req.params;
     const data = req.body
 
     comentarioDb = await Comentario.findById(id);
-    const comentarioPut = (comentarioDb.creado_por == id_usuario) ? await Comentario.findByIdAndUpdate(id, data, { new: true })
-        : res.status(401).json({ msg: 'Error: modificacion de comentario solo posible por usuario que lo creo' })
 
-    console.log(comentarioPut);
+    const comentarioPut = (comentarioDb.creado_por == id_usuario) ? await Comentario.findByIdAndUpdate(id, data, { new: true })
+        : res.status(401).json({ msg: 'Error: modificacion de comentario solo posible por usuario que lo creo' });
+
     res.status(202).json({
 
         msg: 'Actualizacion realizada con exito',
@@ -149,10 +150,9 @@ const comentarioPut = async (req, res = response) => {
 
 const comentarioDeleteAnime = async (req, res = response) => {
 
-    let { id } = req.params;
+    const { id } = req.params;
 
-    const { anime } = await Comentario.findByIdAndUpdate(id, { estado: false }, { new: true });
-    console.log(anime);
+    const { anime } = await Comentario.findByIdAndDelete(id);
 
     await Anime.findByIdAndUpdate(anime, { $pull: { 'comentarios': id } }, { new: true });
 
@@ -164,28 +164,24 @@ const comentarioDeleteAnime = async (req, res = response) => {
 
 const comentarioDeleteManga = async (req, res = response) => {
 
-    let { id } = req.params;
+    const { id } = req.params;
 
-    const { manga } = await Comentario.findByIdAndUpdate(id, { estado: true }, { new: true });
+    const { manga } = await Comentario.findByIdAndUpdate(id);
 
     await Manga.findByIdAndUpdate(manga, { $pull: { 'comentarios': id } }, { new: true });
+
     res.json({
-
         msg: `El comentario con el id: ${id} ha sido borrado correctamente`
-
     });
 
 };
 
-
-
 module.exports = {
-    crearComentario,
+    crearComentarioAnime,
+    crearComentarioManga,
     comentariosGet,
-    comentarioGetAnime,
-    comentarioGetManga,
+    comentarioGet,
     comentarioPut,
     comentarioDeleteAnime,
     comentarioDeleteManga
-
 };
