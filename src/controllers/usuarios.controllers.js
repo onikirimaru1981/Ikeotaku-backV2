@@ -182,57 +182,62 @@ const usuariosDelete = async (req, res = response) => {
 
 
 
-const añadirFavorito = async (req = request, res = response) => {
-
-    // try {
+const añadirFavoritoAnime = async (req = request, res = response) => {
 
     const { id, id_usuario: _id } = req.params;
 
-    const originalUrl = req.originalUrl;
+    const data = await Anime.findOne({ id });
 
-    const { id: idFavorito, categoria, } =
-        originalUrl.includes('manga') ? await Manga.findOne({ id }) :
-            originalUrl.includes('anime') ? await Anime.findOne({ id }) :
-                res.status(500).json({ msg: 'Pongase en contacto con el administrador' });
-
-
-    originalUrl.includes('manga') ? await Usuario.findOneAndUpdate({ _id }, { $push: { mangasFavoritos: idFavorito } }) :
-        originalUrl.includes('anime') ? await Usuario.findOneAndUpdate({ _id }, { $push: { animesFavoritos: idFavorito } }) :
-            res.status(500).json({ msg: 'Pongase en contacto con el administrador' });
+    const usuario = await Usuario.findOneAndUpdate({ _id }, { $push: { animesFavoritos: data._id } })
+    console.log(usuario);
 
     return res.status(200).json({
 
-        msg: `${categoria} añadido correctamente a lista de favoritos`,
+        msg: `${data.categoria} añadido correctamente a lista de favoritos`,
 
     });
 
-    // } catch (error) {
-    //     console.log(error);
-    //     res.status(500).json({
-    //         msg: 'Ups algo ha pasado,contacta con el administrador'
-    //     });
-    // };
+
+};
+const añadirFavoritoManga = async (req = request, res = response) => {
+
+    const { id, id_usuario: _id } = req.params;
+
+    const data = await Manga.findOne({ id });
+
+    const usuario = await Usuario.findOneAndUpdate({ _id }, { $push: { mangasFavoritos: data._id } })
+    console.log(usuario);
+
+    return res.status(200).json({
+
+        msg: `${data.categoria} añadido correctamente a lista de favoritos`,
+
+    });
 
 };
 
 const eliminarFavorito = async (req = request, res = response) => {
 
-
-    const { id, id_usuario: _id } = req.params;
-    const originalUrl = req.originalUrl;
+    let { idUsuario, id_anime: id } = req.params;
 
 
-    await Usuario.findOneAndUpdate({ _id }, { $pull: { animesFavoritos: { $elemMatch: { id: id } } } })
+
+    await Usuario.findByIdAndUpdate(idUsuario, { $pull: { 'animesFavoritos': id } }, { new: true });
+
+    res.json({
+        msg: `Favorito borrado de la lista correctamente correctamente`,
+
+    });
 
 
-    // originalUrl.includes('manga') ? await Usuario.findOneAndUpdate({ _id }, { $pull: id }) :
-    //     originalUrl.includes('anime') ? await Usuario.findOneAndUpdate({ _id }, { $pull: id }) :
-    //         res.status(500).json({ msg: 'Pongase en contacto con el administrador' });
+    // const { anime } = await Comentario.findByIdAndUpdate(id, { estado: false }, { new: true });
+    // console.log(anime);
 
-    res.status(201).json({
+    // await Anime.findByIdAndUpdate(anime, { $pull: { 'comentarios': id } }, { new: true });
 
-        msg: `Borrado de: ${id} efectuado correctamente`
-    })
+    // res.json({
+    //     msg: `El comentario con el id: ${id} ha sido borrado correctamente`
+    // });
 
 };
 
@@ -244,7 +249,8 @@ module.exports = {
     usuariosPost,
     usuariosPut,
     usuariosDelete,
-    añadirFavorito,
+    añadirFavoritoAnime,
+    añadirFavoritoManga,
     eliminarFavorito
 }
 

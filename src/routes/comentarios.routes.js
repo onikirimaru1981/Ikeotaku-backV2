@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { crearComentario, comentarioGet, comentariosGet, comentarioPut, comentarioDelete } = require('../controllers');
+const { crearComentario, comentarioGetManga, comentariosGet, comentarioPut, comentarioDeleteManga, comentarioDeleteAnime, comentarioGetAnime } = require('../controllers');
 const { } = require('../helpers/db-validators');
 const { validarJWT, validarCampos, esAdminRole } = require('../middlewares');
 const { response, request } = require('express')
@@ -15,11 +15,11 @@ router.get('/', [
 
 router.get('/ver_comentarios_manga/:id', [
     validarCampos
-], comentarioGet);
+], comentarioGetManga);
 
 router.get('/ver_comentarios_anime/:id', [
     validarCampos
-], comentarioGet);
+], comentarioGetAnime);
 
 router.post('/:id_usuario/add_anime_coment/:id', [
     validarJWT,
@@ -32,18 +32,26 @@ router.post('/:id_usuario/add_manga_coment/:id', [
 ], crearComentario);
 
 
-router.put('/:id_usuario/:id', [
+router.put('/:idUsuario/:id', [
     validarJWT,
     validarCampos
 ], comentarioPut);
 
 
 
-router.delete('/borrarComentario/:id', [
+router.delete('/borrarComentarioManga/:id', [
     validarJWT,
     esAdminRole,
     validarCampos
-], comentarioDelete);
+], comentarioDeleteManga);
+
+router.delete('/borrarComentarioAnime/:id', [
+    validarJWT,
+    esAdminRole,
+    validarCampos
+], comentarioDeleteAnime);
+
+
 
 
 
