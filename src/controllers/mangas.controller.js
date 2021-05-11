@@ -66,8 +66,6 @@ const mangaGet = async (req, res = response) => {
 
     const { estado, id } = manga
 
-    console.log(estado, id);
-
     if (!estado) {
         res.status(400).json(
             { msg: `El manga con el id: ${id} que intenta solicitar ya no existe  en la DB` });

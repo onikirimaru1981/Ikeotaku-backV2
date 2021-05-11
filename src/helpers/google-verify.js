@@ -12,9 +12,9 @@ const googleVerify = async (idToken = '') => {
     });
 
     const { name: nombre, picture: img, email: correo } = ticket.getPayload();
-    console.log(nombre);
+
     // const userid = payload['sub'];
     return { nombre, img, correo };
 }
-// verify().catch(console.error);
+
 module.exports = googleVerify;

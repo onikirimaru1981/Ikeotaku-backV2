@@ -7,7 +7,8 @@ let coleccionesPermitidas = [
     'usuarios',
     'animes',
     'mangas',
-    'roles'
+    'roles',
+
 ];
 
 
@@ -25,15 +26,13 @@ const buscarUsuarios = async (termino = '', res = response) => {
 
     const regexp = new RegExp(termino, 'i');
     const usuarios = await Usuario.find({
-        $or: [{ nombre: regexp }, { correo: regexp }],
+        $or: [{ nombre: regexp }, { correo: regexp }, { animesFavoritos: regexp }, { mangasFavoritos: regexp }],
         $and: [{ estado: true }]
     });
     const numeroResultados = await Usuario.count({
-        $or: [{ nombre: regexp }, { correo: regexp }],
+        $or: [{ nombre: regexp }, { correo: regexp }, { animesFavoritos: regexp }, { mangasFavoritos: regexp }],
         $and: [{ estado: true }]
     });
-
-
 
     res.json({
         resultados: numeroResultados,
@@ -52,9 +51,10 @@ const buscarAnimes = async (termino = '', res = response) => {
 
         });
     };
-    //Busqueda por parametros
+
     const regexp = new RegExp(termino, 'i');
     const animes = await Anime.find({ "titulos.en": regexp, estado: true });
+
     const numeroResultados = await Anime.count({
         $or: [{ "titulos.en": regexp }],
         $and: [{ estado: true }]
@@ -77,15 +77,13 @@ const buscarMangas = async (termino = '', res = response) => {
 
         });
     };
-    //Busqueda por parametros
+
     const regexp = new RegExp(termino, 'i');
     const mangas = await Manga.find({ "titulos.en_jp": regexp, estado: true })
     const numeroResultados = await Manga.count({
         $or: [{ "titulos.en_jp": regexp }],
         $and: [{ estado: true }]
     });
-
-
 
     res.json({
         resultados: numeroResultados,
@@ -96,8 +94,7 @@ const buscarMangas = async (termino = '', res = response) => {
 
 const buscar = (req, res = response) => {
 
-    const { coleccion, termino } = req.params
-
+    const { coleccion, termino } = req.params;
     if (!coleccionesPermitidas.includes(coleccion)) {
         return res.status(400).json({
             msg: `Error: '${coleccion}'.No es una de las colecciones permitidas,estas son: ${coleccionesPermitidas}`

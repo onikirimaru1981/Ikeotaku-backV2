@@ -8,9 +8,9 @@ const saveDocuments = (data) => {
         const genero = Genero();
 
         genero.tipo = genero_data.attributes.title;
-        // console.log(genero);
+
         genero.descripcion = genero_data.attributes.description;
-        // console.log(genero);
+
 
         try {
             genero.save((err, generoSave) => {
