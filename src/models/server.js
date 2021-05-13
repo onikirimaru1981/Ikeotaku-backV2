@@ -19,7 +19,6 @@ class Server {
             comentarios: '/api/comentario',
             // generos: '/api/genero',
             mangas: '/api/manga',
-            // puntuaciones: '/api/puntuacion',
             // uploads: '/api/img',
             usuarios: '/api/usuario',
         };
@@ -68,7 +67,6 @@ class Server {
         this.app.use(this.paths.comentarios, require('../routes/comentarios.routes'))
         // this.app.use(this.paths.generos, require('../routes/auth.routes'))
         this.app.use(this.paths.mangas, require('../routes/mangas.routes'));
-        // this.app.use(this.paths.puntuaciones, require('../routes/auth.routes'))
         // this.app.use(this.paths.uploads, require('../routes/auth.routes'))
         this.app.use(this.paths.usuarios, require('../routes/usuarios.routes'));
     };
