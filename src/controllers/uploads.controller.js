@@ -65,10 +65,11 @@ const actualizarImagen = async (req, res = response) => {
 };
 
 
-const mostrarImagen = async (req, res = response) => {
+const mostrarImagenUsuario = async (req, res = response) => {
 
     const { id, coleccion } = req.params;
     let modelo;
+
     try {
 
         switch (coleccion) {
@@ -85,24 +86,18 @@ const mostrarImagen = async (req, res = response) => {
                 return res.status(500).json({ msg: ' Se me olvido validar esto' });
         };
 
-
-
         if (modelo.img) {
 
-            const pathImagen = path.join(__dirname, '../uploads', coleccion, modelo.img);
-            if (fs.existsSync(pathImagen)) {
+            return res.json({
+                img: modelo.img
+            });
 
-                return res.sendFile(pathImagen)
-            };
+        } else {
 
+            const pathImagen = path.join(__dirname, '../assets', '../assets/no-image.jpg');
+
+            return res.sendFile(pathImagen)
         }
-        // const pathImagen = path.join(__dirname, '../assets', '../assets/no-image.jpg');
-
-        // return res.sendFile(pathImagen)
-
-
-
-
 
     } catch (error) {
 
@@ -158,12 +153,9 @@ const actualizarImagenCloudinary = async (req, res = response) => {
 };
 
 
-
-
 module.exports = {
     cargarArchivo,
     actualizarImagen,
     actualizarImagenCloudinary,
-    mostrarImagen
-
+    mostrarImagenUsuario
 };
