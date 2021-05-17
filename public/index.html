@@ -5,40 +5,104 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Signin</title>
 
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <!-- Meta de google -->
     <meta name="google-signin-client_id"
         content="308473680502-ifq14iak7qbc7k9iq0jjno5pob4ap799.apps.googleusercontent.com">
-    <script>
-        function onSignIn(googleUser) {
+</head>
 
-            var profile = googleUser.getBasicProfile();
-            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-            console.log('Name: ' + profile.getName());
-            console.log('Image URL: ' + profile.getImageUrl());
-            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+<body>
+    <!-- <h1>Facebook Signin</h1> -->
+    <div class="fb-login-button" data-width="" data-size="medium" data-button-type="continue_with" data-layout="default"
+        data-auto-logout-link="true" data-use-continue-as="true"></div>
+    </div>
+    <script>
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '154265726651322',
+                cookie: true,
+                xfbml: true,
+                version: 'v10.0'
+            });
+
+            FB.AppEvents.logPageView();
 
         };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {
+                return;
+            }
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
     </script>
 
 
 
 
 
-    <title>Google Signin</title>
-</head>
-
-<body>
-
     <h1>Google Signin</h1>
     <hr>
-
     <!-- Boton de Google -->
+    <div class="g-signin2" data-onsuccess="onSignIn" data-width="220" data-height="40" data-theme="dark"
+        data-longtitle="true"></div>
+    <hr>
+    <!-- Boton cerrar session google -->
 
-    <div class="g-signin2" data-onsuccess=" onSignIn "></div>
-
+    <a href="#" onclick="signOut();">Cerrar sesion</a>
+    <hr>
     <!-- <Script> De google -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+    <script>
+        // Ternario para cuando acceda al servicio desde local o remoto
+
+        var url = (window.location.hostname.includes('localhost')) ?
+            'http://localhost:8080/api/auth/google' :
+            'https://ikeotaku-back.herokuapp.com/api/auth/google';
+
+
+        // Inicio de sesion
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            // console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+            // console.log('Name: ' + profile.getName());
+            // console.log('Image URL: ' + profile.getImageUrl());
+            // console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+            var id_token = googleUser.getAuthResponse().id_token;
+            const data = {
+                id_token
+            };
+
+            // Peticion POST desde frontend
+
+            fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(resp => resp.json())
+                .then(data => console.log('Server', data))
+                .catch(console.log)
+        };
+
+
+        // Cerrar sesion
+
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                console.log('Sesion de usuario cerrada.');
+            });
+        }
+    </script>
 
 
 </body>

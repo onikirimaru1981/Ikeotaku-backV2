@@ -20,13 +20,14 @@ const UsuarioSchema = Schema({
 
     password: {
         type: String,
-        required: [this.google == false,],
+        required: [this.google == false],
         required: ['La contraseña es requerida.']
     },
 
     fechaNacimiento: {
         type: Date,
-        required: [true, 'La fecha de nacimiento es obligatoria']
+        required: [true, 'La fecha de nacimiento es obligatoria'],
+        default: [this.google === true, Date()]
     },
 
     rol: {
